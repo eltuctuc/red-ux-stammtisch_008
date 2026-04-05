@@ -77,5 +77,100 @@ Die Watchlist ist das primäre Navigations-Element: Coin auswählen → Chart ak
 
 ---
 
-## Fortschritt
-- Status: Freigegeben
+## 2. UX Entscheidungen
+*Erstellt von: /red:proto-ux — 2026-04-05*
+
+### Einbettung
+Desktop: Vertikale Sidebar, 260px breit, rechts neben Main-Bereich, volle Höhe (sticky, scrollt nicht mit). Mobile: Horizontaler Scroll-Strip zwischen Preis-Chart und Transaktionen-Tabelle.
+
+### Komponenten & Layout
+
+**Desktop – Sidebar:**
+```
+┌── Glass Card (260px breit) ────┐
+│  "Watchlist"  (Label, 11px)    │
+│                                │
+│  ┌── Coin-Eintrag ──────────┐  │
+│  │ [Icon] Bitcoin  BTC      │  │
+│  │        $42,350.00        │  │
+│  │  ↑ +2.65%  [Sparkline]   │  │
+│  └──────────────────────────┘  │
+│  ┌── Coin-Eintrag (aktiv) ──┐  │
+│  │ [Accent-Border links]    │  │
+│  │ [Icon] Ethereum  ETH     │  │
+│  │        $2,340.00         │  │
+│  │  ↑ +1.2%   [Sparkline]   │  │
+│  └──────────────────────────┘  │
+│  ...                           │
+└────────────────────────────────┘
+```
+
+**Mobile – Scroll-Strip:**
+```
+← [BTC-Karte] [ETH-Karte] [SOL-Karte] [BNB-Karte] [ADA-Karte] [XRP-Karte] →
+   (overflow-x: auto, kein Scrollbar sichtbar, kein Snap nötig)
+```
+
+### Coin-Eintrag Design (Desktop)
+
+Interne Struktur einer Karten-Zeile:
+```
+[Icon 32px]  [Name 14px/600]   [Symbol 12px/secondary]   [Sparkline 56×24px]
+             [$42,350.00 15px/tabular-nums]
+             [↑ +2.65% 13px, grün/rot]
+```
+
+- Padding: 12px 16px
+- Mindesthöhe: 64px (Icon + 2 Zeilen Text + Spacing)
+- Hover: `background: var(--bg-surface-high)`, Transition 150ms
+- Cursor: pointer
+- Border-Left aktiv: `4px solid var(--accent)`, Padding-Left reduziert um 4px
+
+**Aktiv-State:**
+- `border-left: 4px solid var(--accent)`
+- `background: var(--accent-bg)`
+- Kein Bold-Toggle – zu abrupt
+
+### Coin-Icon
+- Primär: Emoji (₿ Bitcoin, Ξ Ethereum, ◎ Solana, 🔷 BNB, ₳ Cardano, ✕ XRP)
+- Alternativ: Farbige Initial-Badges (Kreis 32px, Coin-Farbe als BG, Symbol als Text)
+- Entscheidung für Entwickler: SVG-Sprites bevorzugt wenn vorhanden, Emoji als Fallback
+
+### Sparkline (Watchlist-intern)
+- Breite: 56px, Höhe: 24px, kein Container erforderlich (feste Größe)
+- Recharts `<LineChart width={56} height={24}>`
+- Keine Achsen, kein Grid, kein Tooltip
+- `strokeWidth: 1.5`, Farbe: `var(--green)` / `var(--red)` je nach 24h-Change
+- `isAnimationActive={false}`
+- `dot={false}`
+
+### Mobile-Scroll-Strip Design
+
+Pro Karte im Strip:
+```
+┌── Karte (140px × 96px) ───┐
+│  [Icon]  BTC               │
+│  $42,350                   │
+│  ↑ +2.65%                  │
+│  [Sparkline 80×24px]       │
+└────────────────────────────┘
+```
+- Strip-Wrapper: `display: flex`, `overflow-x: auto`, `gap: 8px`, `padding: 0 16px 8px`
+- Scrollbar versteckt: `-webkit-scrollbar: none`, `scrollbar-width: none`
+- Kein Fade-Edge (zu komplex, kein echter Mehrwert)
+- Aktive Karte: accent-farbige Border, leicht erhöhter Hintergrund
+
+### "Keine Treffer"-State
+- Text: "Keine Coins gefunden" in `var(--text-secondary)`, 14px
+- Mittig in der Sidebar (Desktop) oder im Strip-Bereich (Mobile)
+- Kein Icon nötig
+
+### Touch-Target-Tabelle
+
+| Element | Höhe visuell | WCAG 2.5.5 (44px) | Lösung |
+|---------|-------------|-------------------|--------|
+| Coin-Eintrag Desktop | 64px | ✅ | Native |
+| Coin-Karte Mobile Strip | 96px | ✅ | Native |
+
+### Fortschritt
+- Status: Freigegeben, Aktueller Schritt: UX

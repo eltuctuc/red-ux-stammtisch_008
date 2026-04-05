@@ -74,5 +74,75 @@ Der interaktive Chart ist das visuell dominanteste Element der App und der stär
 
 ---
 
-## Fortschritt
-- Status: Freigegeben
+## 2. UX Entscheidungen
+*Erstellt von: /red:proto-ux — 2026-04-05*
+
+### Einbettung
+Der Preis-Chart ist das visuelle Herzstück und nimmt den größten Bereich des Main-Bereichs ein. Er liegt direkt unter der Hero-Karte, volle Breite des Main-Bereichs.
+
+### Komponenten & Layout
+
+**Karten-Struktur:**
+```
+┌─── Glass Card (24px padding) ──────────────────────────────────┐
+│  [Coin-Name + Symbol]         [1T] [1W] [1M] [3M]             │
+│  $42,350.00  ↑ +2.3%                                           │
+│  ┌──────────────── AreaChart (100% × 280px) ─────────────────┐ │
+│  │ $45K ┤                                                     │ │
+│  │ $40K ┤    ╭───╮      ╭─────╮                              │ │
+│  │ $35K ┤───╯   ╰──────╯     ╰────                           │ │
+│  │      └────────────────────────────── Jan  →  Apr           │ │
+│  └──────────────────────────────────────────────────────────┘ │
+└────────────────────────────────────────────────────────────────┘
+```
+
+### Zeitraum-Button-Gruppe
+- 4 Buttons: "1T" / "1W" / "1M" / "3M"
+- Layout: inline-flex, gap 4px, float rechts oben in der Karte
+- Aktiver Button: `background: var(--accent-bg)`, `color: var(--accent)`, `border: 1px solid var(--accent)`, border-radius 8px
+- Inaktiver Button: `background: transparent`, `color: var(--text-secondary)`, Hover: `background: var(--bg-surface-high)`
+- Padding: 6px 12px → Höhe ~32px (kleiner als normale Touch-Targets ok, da Desktop-Primär)
+- Mobile: Buttons in voller Breite als Tabs unter dem Karten-Titel
+
+### AreaChart Konfiguration
+- Recharts `<AreaChart>` (nicht LineChart – Area-Fill ist visuell eindrucksvoller)
+- Höhe: 280px (Desktop), 200px (Mobile)
+- Background: `"transparent"` – kritisch für Glassmorphism-Kompatibilität
+- Area-Fill: `<defs><linearGradient>` von `var(--accent)` mit opacity 0.3 oben → 0 unten
+- Linie: `stroke: var(--accent)`, `strokeWidth: 2`
+- Dot: `dot={false}`, `activeDot={{ r: 4, fill: var(--accent) }}`
+- isAnimationActive: `true`, animationDuration: `600`
+
+### Achsen
+- **YAxis:** `tickFormatter={(v) => v >= 1000 ? '$' + (v/1000).toFixed(0) + 'K' : '$' + v}`, width: 50px, `tick={{ fill: var(--text-secondary), fontSize: 11 }}`, keine vertikale Linie (`axisLine={false}`, `tickLine={false}`)
+- **XAxis:** Nur 2 Ticks: erster und letzter Datenpunkt. `tick={{ fill: var(--text-secondary), fontSize: 11 }}`, `axisLine={false}`, `tickLine={false}`
+- **CartesianGrid:** `strokeDasharray="4 4"`, `stroke: rgba(255,255,255,0.05)` (dark) / `rgba(0,0,0,0.05)` (light)
+
+### Tooltip
+```
+┌──────────────────┐
+│  12. März 2025   │
+│  $42,350.00      │
+└──────────────────┘
+```
+- Custom `<Tooltip contentStyle>`: glass-card Stil (blur + border + border-radius 10px)
+- `labelFormatter`: Datum als "12. März 2025"
+- `formatter`: Preis als "$42,350.00"
+- `cursor={{ stroke: var(--accent), strokeWidth: 1, strokeDasharray: '4 4' }}`
+
+### Coin-Info im Chart-Header (unter Karten-Titel)
+- Coin-Name (z.B. "Bitcoin") + Symbol (z.B. "BTC") in 16px / 600
+- Aktueller Preis in 15px / 600 / tabular-nums
+- 24h-Change in 13px / 500, grün/rot
+- Begründung: Nutzer sieht sofort welcher Coin gerade angezeigt wird – kein Suchen nötig
+
+### Touch-Target-Tabelle
+
+| Element | Höhe visuell | WCAG 2.5.5 (44px) | Lösung |
+|---------|-------------|-------------------|--------|
+| Zeitraum-Buttons Desktop | ~32px | ❌ Desktop-Only | Akzeptiert – primäres Gerät Desktop |
+| Zeitraum-Buttons Mobile | 44px als Tabs | ✅ | volle Breite, 44px Höhe |
+| Chart selbst (Hover) | – | n/a | Keine Touch-Target-Anforderung |
+
+### Fortschritt
+- Status: Freigegeben, Aktueller Schritt: UX

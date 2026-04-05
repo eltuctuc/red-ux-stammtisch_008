@@ -71,5 +71,53 @@ Die Portfolio-Übersicht ist der visuelle Anker der App – Gesamtwert und 24h-P
 
 ---
 
-## Fortschritt
-- Status: Freigegeben
+## 2. UX Entscheidungen
+*Erstellt von: /red:proto-ux — 2026-04-05*
+
+### Einbettung
+Die Hero-Karte ist die erste vollständige Glassmorphism-Karte die der Nutzer sieht. Sie setzt den visuellen Standard. Platzierung: links oben, volle Breite des Main-Bereichs, unter dem Header.
+
+### Komponenten & Layout
+
+**Interne Struktur der Karte:**
+```
+┌─── Glass Card (24px padding) ──────────────────────────┐
+│  "Portfolio-Wert"           [Sparkline 120×48px rechts] │
+│  $47,823.50 (40px/700)                                  │
+│  ↑ +$1,234.56  +2.65%  (13px/500, grün)                │
+└─────────────────────────────────────────────────────────┘
+```
+
+- Karte: 100% Breite des Main-Bereichs, Border-Radius 16px
+- Label "Portfolio-Wert": 11px / 600 / uppercase / `var(--text-secondary)` → dient als Kontext-Label, nicht als visueller Fokus
+- Sparkline: Position rechts, 120px × 48px, kein Achsen-Label, kein Tooltip, Farbe: grün wenn positive 24h-Change, rot wenn negativ
+
+### Typografie-Hierarchie
+1. **$47,823.50** – 40px, 700, `var(--text-primary)`, `letter-spacing: -0.02em`, `font-variant-numeric: tabular-nums`
+2. **↑ +$1,234.56 +2.65%** – 14px, 500, `var(--green)` oder `var(--red)`, Pfeil-Icon 14px
+3. **"Portfolio-Wert"** – 11px, 600, uppercase, `var(--text-secondary)`
+
+**Begründung der Hierarchie:** Wert sofort lesbar (40px), Change-Farbe semantisch (grün/rot), Label dezent – nicht zuerst sehen, sondern als Kontext verstehen.
+
+### Pfeil-Icon
+- ↑ bei positivem Wert: Tailwind `heroicons` oder einfaches Unicode ↑ / ▲
+- ↓ bei negativem Wert: ↓ / ▼
+- Farbe: gleiche Farbe wie der Prozentsatz
+- Kein Icon bei exakt 0%: neutraler Bindestrich "–" in `var(--text-secondary)`
+
+### Hover-Animation
+- `transform: translateY(-2px)` + `box-shadow` Intensivierung (aus FEAT-1 Tokens)
+- Cursor: default (keine Navigation bei Klick)
+- Transition: 200ms `cubic-bezier(0.2, 0, 0, 1)`
+
+### Sparkline (Recharts)
+- `<ResponsiveContainer width={120} height={48}>`
+- `<LineChart data={last7Days}>` mit `background="transparent"`
+- Keine Achsen (`<XAxis hide />`, `<YAxis hide />`)
+- Keine Grid-Linien
+- Linie: `strokeWidth={1.5}`, Farbe: `var(--green)` / `var(--red)`
+- `isAnimationActive={false}`
+- `dot={false}`
+
+### Fortschritt
+- Status: Freigegeben, Aktueller Schritt: UX

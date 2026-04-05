@@ -74,5 +74,172 @@ Ohne dieses Feature funktioniert kein anderes: realistische Mock-Daten, globaler
 
 ---
 
+## 2. UX Entscheidungen
+*Erstellt von: /red:proto-ux — 2026-04-05*
+
+### Einbettung
+Foundation ist kein sichtbares UI-Feature. Es definiert das vollständige Design-Token-System, das alle anderen Features verwenden. Alle Token-Entscheidungen hier sind verbindlich für FEAT-2 bis FEAT-6.
+
+---
+
+### Design Token System
+
+#### Farb-Palette
+
+**Dark Theme (Standard):**
+```
+--bg-page:         #0a0b0f          (tiefschwarz mit Blau-Unterton)
+--bg-surface:      rgba(255,255,255,0.04)   (Glasskarte Hintergrund)
+--bg-surface-high: rgba(255,255,255,0.07)   (erhöhte Karte, Hover)
+--border:          rgba(255,255,255,0.08)   (subtile Glassborder)
+--text-primary:    #f1f5f9          (slate-100)
+--text-secondary:  #64748b          (slate-500)
+--text-muted:      #334155          (slate-700, für Placeholder)
+--accent:          #818cf8          (indigo-400)
+--accent-bg:       rgba(129,140,248,0.12)
+--green:           #10b981          (emerald-500)
+--green-bg:        rgba(16,185,129,0.12)
+--red:             #f87171          (red-400)
+--red-bg:          rgba(248,113,113,0.12)
+```
+
+**Light Theme:**
+```
+--bg-page:         #f1f5f9          (slate-100, kein reines Weiß)
+--bg-surface:      rgba(255,255,255,0.80)
+--bg-surface-high: rgba(255,255,255,0.95)
+--border:          rgba(0,0,0,0.07)
+--text-primary:    #0f172a          (slate-900)
+--text-secondary:  #64748b          (slate-500)
+--text-muted:      #94a3b8          (slate-400)
+--accent:          #4f46e5          (indigo-600)
+--accent-bg:       rgba(79,70,229,0.10)
+--green:           #059669          (emerald-600)
+--green-bg:        rgba(5,150,105,0.10)
+--red:             #dc2626          (red-600)
+--red-bg:          rgba(220,38,38,0.10)
+```
+
+**Begründung:** Slate-100 als Light-BG (nicht reines Weiß) – wirkt Premium wie Linear, Vercel, Stripe. Indigo als Accent statt Orange/Blau: zeitgemäß, nicht krypto-cliché. Alle Farben haben semantische bg-Varianten für Badges.
+
+---
+
+#### Glassmorphism System
+
+```
+.glass-card {
+  background: var(--bg-surface);
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow (dark):  0 4px 24px rgba(0,0,0,0.40),
+                      0 1px 0 rgba(255,255,255,0.05) inset;
+  box-shadow (light): 0 4px 24px rgba(0,0,0,0.08),
+                      0 1px 0 rgba(255,255,255,0.80) inset;
+}
+```
+
+**Begründung:** blur(12px) ist die Schwelle zwischen "sichtbarer Effekt" und "unlesbarem Chart". saturate(120%) intensiviert die Farben im Hintergrund leicht. Inset-Shadow oben gibt die Glasskante.
+
+---
+
+#### Typografie-Skala
+
+```
+--text-value:      40px / 700 / letter-spacing: -0.02em   (Portfolio-Gesamtwert)
+--text-heading:    20px / 600 / letter-spacing: -0.01em   (Sektions-Titel)
+--text-price:      15px / 600 / font-variant-numeric: tabular-nums
+--text-change:     13px / 500                             (24h-Änderung)
+--text-label:      11px / 600 / uppercase / letter-spacing: 0.08em  (Tabellen-Header)
+--text-body:       14px / 400                             (Tabellenzellen, Body)
+--text-timestamp:  13px / 400 / color: var(--text-secondary)
+```
+
+Font-Stack: `"Inter", system-ui, -apple-system, sans-serif`
+Hinweis: Inter wird per Google Fonts oder lokal eingebunden (Entscheidung für Entwickler).
+
+---
+
+#### Spacing-System
+
+```
+--space-xs:  4px
+--space-sm:  8px
+--space-md:  12px
+--space-lg:  16px
+--space-xl:  24px
+--space-2xl: 32px
+--space-3xl: 48px
+Card-Padding Desktop: 24px
+Card-Padding Mobile:  16px
+Section-Gap:          16px
+```
+
+---
+
+#### Breakpoints
+
+```
+mobile:    < 768px
+tablet:    768px – 1023px
+desktop:   ≥ 1024px
+max-width: 1400px (zentriert, auto margins)
+```
+
+---
+
+#### Layout-Struktur (Desktop)
+
+```
+┌──────────────────────────────────────────────────┐
+│  Header (sticky, 64px, backdrop-blur)            │
+├─────────────────────────────────┬────────────────┤
+│  Main (flex-1)                  │  Sidebar       │
+│  ┌──────────────────────────┐   │  260px         │
+│  │  Portfolio Hero (FEAT-3) │   │  (FEAT-5)      │
+│  └──────────────────────────┘   │                │
+│  ┌──────────────────────────┐   │                │
+│  │  Preis-Chart (FEAT-4)    │   │                │
+│  └──────────────────────────┘   │                │
+│  ┌──────────────────────────┐   │                │
+│  │  Transaktionen (FEAT-6)  │   │                │
+│  └──────────────────────────┘   │                │
+└─────────────────────────────────┴────────────────┘
+```
+
+**Mobile (< 768px):** Sidebar fällt als horizontaler Strip zwischen Preis-Chart und Transaktionen ein.
+
+---
+
+#### Animation-System
+
+```
+--transition-hover:  transform 200ms cubic-bezier(0.2, 0, 0, 1),
+                     box-shadow 200ms cubic-bezier(0.2, 0, 0, 1);
+--transition-theme:  background-color 300ms ease,
+                     color 300ms ease,
+                     border-color 300ms ease,
+                     box-shadow 300ms ease;
+--hover-lift:        translateY(-2px)
+--hover-shadow:      0 8px 32px rgba(0,0,0,0.50) (dark)
+                     0 8px 32px rgba(0,0,0,0.14) (light)
+```
+
+Recharts Hauptchart: `isAnimationActive={true}`, `animationDuration={600}`
+Recharts Sparklines: `isAnimationActive={false}` (Performance)
+
+---
+
+### Responsive Verhalten
+
+| Breakpoint | Spalten | Sidebar | Card-Padding |
+|------------|---------|---------|-------------|
+| Desktop ≥1024px | 2 Spalten (Main + Sidebar) | Vertikal rechts, 260px | 24px |
+| Tablet 768–1023px | 1 Spalte | Unter Main, volle Breite | 20px |
+| Mobile < 768px | 1 Spalte | Horizontal-Strip | 16px |
+
+---
+
 ## Fortschritt
-- Status: Freigegeben
+- Status: Freigegeben, Aktueller Schritt: UX

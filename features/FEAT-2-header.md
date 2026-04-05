@@ -75,5 +75,59 @@ Der Header ist das erste was jeder sieht – App-Identität und Live-Suche müss
 
 ---
 
-## Fortschritt
-- Status: Freigegeben
+## 2. UX Entscheidungen
+*Erstellt von: /red:proto-ux — 2026-04-05*
+
+### Einbettung
+Der Header ist eine permanente, sticky Top-Bar. Keine Drawer, kein Hamburger-Menü – eine einzige Seite braucht keine Navigation. Der Header kommuniziert App-Identität und stellt globale Steuerung bereit.
+
+### Komponenten & Layout
+
+**Desktop (≥768px):**
+```
+[Logo + "Cryptofolio"]  [───── Suchleiste (flex-1, max 400px) ─────]  [Theme-Toggle]
+```
+- Logo: 28px Emoji oder einfaches SVG (₿ oder 🔷), gefolgt von "Cryptofolio" in 18px / 700
+- Suchleiste: flex-1, max-width 400px, zentriert im restlichen Raum
+- Toggle: 40px × 40px Button, mit 2px padding → effektive Touch-Area 44px × 44px
+
+**Mobile (<768px):**
+```
+[Logo + "Cryptofolio"]                          [Theme-Toggle]
+[──────────────── Suchleiste (volle Breite) ──────────────────]
+```
+- Header wird 2-zeilig: Zeile 1 (Logo + Toggle), Zeile 2 (Suche volle Breite)
+- Höhe gesamt: ~108px (64px + 44px Suche + 8px gap)
+- Begründung: Suchleiste auf 375px braucht min. 200px Breite für sinnvolle Nutzung
+
+### Suchleiste Design
+- Hintergrund: `var(--bg-surface-high)` – leicht über BG-Page-Niveau, aber dunkler als Karten
+- Border: `1px solid var(--border)`, border-radius: 10px
+- Placeholder-Text: "Suchen..." in `var(--text-muted)`
+- Fokus-State: Border-Farbe → `var(--accent)`, leichter Box-Shadow `0 0 0 3px var(--accent-bg)`
+- Padding: 10px 16px, Höhe: 40px (→ 44px durch Wrapper-Padding)
+- Kein Such-Icon nötig – zu viel visuelles Gewicht für ein minimales Interface
+
+### Theme-Toggle Design
+- Mond-Icon (Dark Mode aktiv): ausgefülltes Mond-SVG, `var(--text-secondary)`
+- Sonnen-Icon (Light Mode aktiv): ausgefülltes Sonnen-SVG, `var(--text-secondary)`
+- Button-Hintergrund: transparent, Hover: `var(--bg-surface-high)`
+- Border-Radius: 8px
+- Transition: Icon-Opacity 150ms ease (kein Flip-Animation – zu ablenkend)
+
+### Header selbst
+- Höhe: 64px (Desktop), variabel (Mobile, s.o.)
+- Hintergrund: `var(--bg-page)` mit `backdrop-filter: blur(16px)` – stärker als Karten
+- Border-Bottom: `1px solid var(--border)`
+- Padding horizontal: 24px (Desktop), 16px (Mobile)
+- `position: sticky; top: 0; z-index: 50`
+
+### Touch-Target-Tabelle
+
+| Element | Höhe | WCAG 2.5.5 (44px) | Lösung |
+|---------|------|-------------------|--------|
+| Theme-Toggle Button | 40px visuell | ❌ | 2px padding-y im Wrapper → 44px effektiv |
+| Suchleiste | 40px | ❌ | 2px padding-y im Container → 44px effektiv |
+
+### Fortschritt
+- Status: Freigegeben, Aktueller Schritt: UX

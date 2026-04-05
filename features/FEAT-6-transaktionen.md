@@ -76,5 +76,75 @@ Die Transaktions-Tabelle vervollständigt das Dashboard und zeigt dass auch Tabe
 
 ---
 
-## Fortschritt
-- Status: Freigegeben
+## 2. UX Entscheidungen
+*Erstellt von: /red:proto-ux — 2026-04-05*
+
+### Einbettung
+Die Transaktions-Tabelle ist das letzte Element im Main-Bereich, unter dem Preis-Chart. Volle Breite des Main-Bereichs. Auf Desktop: deutlich sichtbar ohne Scrolling nötig (wenn genug Viewport-Höhe). Auf Mobile: scrollt ins Bild.
+
+### Komponenten & Layout
+
+**Karten-Struktur:**
+```
+┌─── Glass Card (24px padding) ──────────────────────────────────────────────┐
+│  "Letzte Transaktionen"  (Label 11px, uppercase)                           │
+│                                                                             │
+│  ┌── Header-Zeile (11px, uppercase, text-secondary) ──────────────────────┐│
+│  │  DATUM    │  TYP    │  COIN  │  MENGE         │  PREIS      │  GESAMT  ││
+│  ├─────────────────────────────────────────────────────────────────────────┤│
+│  │  12.03.25 │ ↑ Kauf  │  BTC   │  0.012345 BTC  │  $42,350    │  $508    ││
+│  │  (hover)  │ (grün)  │        │                │             │         ││
+│  ├─────────────────────────────────────────────────────────────────────────┤│
+│  │  08.03.25 │ ↓ Verk. │  ETH   │  1.500000 ETH  │  $2,340     │  $3,510  ││
+│  │           │ (rot)   │        │                │             │         ││
+│  └─────────────────────────────────────────────────────────────────────────┘│
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Tabellen-Header
+- Hintergrund: `var(--bg-surface-high)` – leicht dunkler als Zeilen-BG
+- Text: 11px / 600 / uppercase / `letter-spacing: 0.08em` / `var(--text-secondary)`
+- Padding: 10px 16px
+- Keine horizontale Border-Separation – subtiler Hintergrund reicht
+
+### Tabellen-Zeilen
+- Hintergrund: transparent (Glasskarte als Hintergrund)
+- Hover: `background: var(--bg-surface-high)`, Transition 150ms
+- Trennlinie zwischen Zeilen: `border-top: 1px solid var(--border)` (subtle)
+- Padding: 14px 16px
+- Zeilenhöhe: ~52px
+
+### Typ-Spalte (Kauf/Verkauf)
+- "Kauf": `var(--green)` + Pfeil-Icon ↑ (14px)
+- "Verkauf": `var(--red)` + Pfeil-Icon ↓ (14px)
+- Icon + Text in einem `<span>`, leicht abgerundetes Badge: `background: var(--green-bg)` / `var(--red-bg)`, padding: 2px 8px, border-radius: 6px
+
+### Zahlen-Formatierung
+- Preise und Gesamt: `font-variant-numeric: tabular-nums` – wichtig damit Zahlen in Spalten exakt untereinander stehen
+- Menge: max 6 Dezimalstellen, Coin-Symbol dahinter in `var(--text-secondary)` (z.B. "0.012345 BTC")
+- Datum: "12. März 2025" – ausgeschrieben, kein ISO-Format
+
+### Mobile-Handling (<768px)
+**Lösung: Reduzierte Spalten**
+- Desktop: 6 Spalten (Datum, Typ, Coin, Menge, Preis, Gesamt)
+- Mobile: 3 Spalten (Datum, Typ + Coin kombiniert, Gesamt)
+- Zusammenfassung Typ+Coin-Spalte Mobile: `"↑ Kauf · BTC"` in einer Zeile
+- Begründung: Radikale Vereinfachung statt horizontales Scrollen – cleaner, ehrlicher für Mobile
+
+**Implementierungs-Hinweis:** Tailwind `hidden md:table-cell` auf Menge- und Preis-Spalten.
+
+### "Keine Transaktionen"-State
+- Text: "Keine Transaktionen gefunden" in `var(--text-secondary)`, 14px, zentriert
+- Colspan auf alle Spalten
+- Tabellen-Header bleibt sichtbar
+
+### Touch-Target-Tabelle
+
+| Element | Höhe visuell | WCAG 2.5.5 (44px) | Lösung |
+|---------|-------------|-------------------|--------|
+| Tabellen-Zeile | ~52px | ✅ | Native (keine klickbaren Zeilen) |
+
+*(Zeilen sind nicht klickbar – kein Navigations-Ziel, nur Anzeige)*
+
+### Fortschritt
+- Status: Freigegeben, Aktueller Schritt: UX
