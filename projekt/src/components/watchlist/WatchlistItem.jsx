@@ -8,8 +8,8 @@ export default function WatchlistItem({ coin, isSelected, onClick }) {
   return (
     <button
       onClick={onClick}
-      aria-pressed={isSelected}
-      aria-label={`${coin.name} auswählen, aktueller Preis ${formatPrice(coin.currentPrice)}`}
+      aria-current={isSelected ? 'true' : undefined}
+      aria-label={`${coin.name} auswählen, aktueller Preis ${formatPrice(coin.price)}`}
       className="w-full flex items-center justify-between gap-2 px-3 py-3 rounded-xl transition-all duration-200 text-left group focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
       style={{
         backgroundColor: isSelected ? 'var(--accent-muted)' : 'transparent',
@@ -32,7 +32,7 @@ export default function WatchlistItem({ coin, isSelected, onClick }) {
       {/* Right: price + change */}
       <div className="text-right shrink-0">
         <p className="text-sm font-semibold leading-none mb-0.5" style={{ color: 'var(--text-primary)' }}>
-          {formatPrice(coin.currentPrice)}
+          {formatPrice(coin.price)}
         </p>
         <ChangeBadge value={coin.change24hPct} className="text-xs justify-end" />
       </div>

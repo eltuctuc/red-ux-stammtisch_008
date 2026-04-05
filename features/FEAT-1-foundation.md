@@ -428,3 +428,30 @@ Weitergabe als Props:
 
 ### Fortschritt
 - Status: Freigegeben, Aktueller Schritt: Tech
+
+## 5. QA Ergebnisse
+*2026-04-05*
+
+### Acceptance Criteria Status
+- [x] AC-1.1 ✅ 6 Coins korrekt implementiert
+- [x] AC-1.2 ✅ Deterministische Sinus-Kurven
+- [x] AC-1.3 ✅ 5 Transaktionen (3 buy, 2 sell)
+- [x] AC-1.4 ✅ ThemeContext mit theme + toggleTheme
+- [x] AC-1.5 ✅ localStorage mit try/catch
+- [x] AC-1.6 ✅ Dark als Default
+- [x] AC-1.7 ✅ Responsive Breakpoint-Logik
+- [x] AC-1.8 ✅ html-Klasse korrekt gesetzt
+
+### Security: n/a (Frontend-Only) | A11y: Skip-Link + role=banner implementiert
+
+### Behobene Bugs
+- BUG-FEAT1-QA-001 – coin.currentPrice → coin.price (Critical, Fixed)
+- BUG-FEAT1-QA-011 – WatchlistSidebar doppelte Instanz (High, Fixed)
+- BUG-FEAT1-QA-005 – selectedTimeframe Default 1W → 1M (Medium, Fixed)
+- BUG-FEAT1-UX-001 – role=banner, Skip-Link (Medium, Fixed)
+
+### Summary
+- ✅ 8/8 ACs passed | ✅ 4 Bugs gefixt
+
+### Production-Ready
+✅ Ready

@@ -9,7 +9,7 @@ export default function WatchlistCard({ coin, isSelected, onClick }) {
     <button
       onClick={onClick}
       aria-pressed={isSelected}
-      aria-label={`${coin.name}, ${formatPrice(coin.currentPrice)}`}
+      aria-label={`${coin.name}, ${formatPrice(coin.price)}`}
       className="shrink-0 w-36 flex flex-col gap-2 p-3 rounded-xl transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
       style={{
         backgroundColor: isSelected ? 'var(--accent-muted)' : 'var(--bg-surface)',
@@ -23,7 +23,7 @@ export default function WatchlistCard({ coin, isSelected, onClick }) {
       </div>
       <MiniSparkline data={coin.sparkline7d} isPositive={isPositive} />
       <p className="text-sm font-semibold text-left" style={{ color: 'var(--text-primary)' }}>
-        {formatPrice(coin.currentPrice)}
+        {formatPrice(coin.price)}
       </p>
     </button>
   )

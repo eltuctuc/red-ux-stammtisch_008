@@ -219,3 +219,23 @@ function TypeBadge({ type }) {
 
 ### Fortschritt
 - Status: Freigegeben, Aktueller Schritt: Tech
+
+## 5. QA Ergebnisse
+*2026-04-05*
+
+### Acceptance Criteria Status
+- [x] AC-6.1–6.10 ✅ Alle ACs passed
+
+### Behobene Bugs
+- BUG-FEAT6-QA-002 – searchQuery-Prop fehlte (High, Fixed)
+- BUG-FEAT6-QA-003 – Leer-State fehlte (High, Fixed)
+- BUG-FEAT6-QA-013 – scope=col auf th (Low, Fixed)
+- BUG-FEAT6-UX-001 – Suchfilter fehlte (High, Fixed)
+- BUG-FEAT6-UX-002 – scope=col (Medium, Fixed)
+- BUG-FEAT6-UX-003 – Coin-Name Mobile fehlte (Low, Fixed)
+
+### Summary
+- ✅ 10/10 ACs passed | ✅ 6 Bugs gefixt
+
+### Production-Ready
+✅ Ready

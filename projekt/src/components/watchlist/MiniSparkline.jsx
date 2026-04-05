@@ -5,7 +5,7 @@ export default function MiniSparkline({ data, isPositive }) {
   return (
     <div className="w-20 h-10">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data}>
+        <LineChart data={data} margin={{ top: 2, right: 2, left: 2, bottom: 2 }}>
           <Line
             type="monotone"
             dataKey="price"

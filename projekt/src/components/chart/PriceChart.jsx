@@ -45,7 +45,7 @@ export default function PriceChart({ coin, timeframe, onTimeframeChange }) {
           </div>
           <div className="flex items-center gap-3">
             <span className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
-              {formatPrice(coin.currentPrice)}
+              {formatPrice(coin.price)}
             </span>
             <ChangeBadge value={coin.change24hPct} />
           </div>

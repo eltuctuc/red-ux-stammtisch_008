@@ -1,21 +1,4 @@
-import { AreaChart, Area, ResponsiveContainer, Tooltip } from 'recharts'
-import { formatPriceCompact } from '../../utils/formatters.js'
-
-function SparkTooltip({ active, payload }) {
-  if (!active || !payload?.length) return null
-  return (
-    <div
-      className="px-2 py-1 rounded-lg text-xs"
-      style={{
-        backgroundColor: 'var(--bg-elevated)',
-        border: '1px solid var(--border)',
-        color: 'var(--text-primary)',
-      }}
-    >
-      {formatPriceCompact(payload[0].value)}
-    </div>
-  )
-}
+import { AreaChart, Area, ResponsiveContainer } from 'recharts'
 
 export default function PortfolioSparkline({ data, isPositive }) {
   const color = isPositive ? 'var(--green)' : 'var(--red)'
@@ -37,9 +20,8 @@ export default function PortfolioSparkline({ data, isPositive }) {
             strokeWidth={2}
             fill="url(#portfolioGradient)"
             dot={false}
-            activeDot={{ r: 4, fill: color, strokeWidth: 0 }}
+            activeDot={false}
           />
-          <Tooltip content={<SparkTooltip />} cursor={false} />
         </AreaChart>
       </ResponsiveContainer>
     </div>

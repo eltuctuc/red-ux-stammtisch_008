@@ -182,3 +182,35 @@ Kein JS für Layout-Wechsel – pure CSS.
 
 ### Fortschritt
 - Status: Freigegeben, Aktueller Schritt: Tech
+
+## 5. QA Ergebnisse
+*2026-04-05*
+
+### Acceptance Criteria Status
+- [x] AC-2.1 ✅ 2-zeiliges Mobile-Layout implementiert
+- [x] AC-2.2 ✅ Controlled Input
+- [x] AC-2.3 ✅ Watchlist-Filter
+- [x] AC-2.4 ✅ TransactionsTable filtert nach searchQuery
+- [x] AC-2.5 ✅ toLowerCase Matching
+- [x] AC-2.6 ✅ trim()-Prüfung
+- [x] AC-2.7 ✅ SVG-Icons (Moon/Sun), 44px Touch-Target
+- [x] AC-2.8 ✅ toggleTheme aus Context
+- [x] AC-2.9 ✅ 300ms Transition
+- [x] AC-2.10 ✅ sticky, backdrop-blur
+
+### Security: n/a | A11y: aria-label, sr-only label, 44px Touch-Target
+
+### Behobene Bugs
+- BUG-FEAT2-QA-006 – Header 2-zeilig Mobile (Medium, Fixed)
+- BUG-FEAT2-QA-008 – ThemeToggle Emojis → SVG (Low, Fixed)
+- BUG-FEAT2-QA-012 – role=banner (Low, Fixed)
+- BUG-FEAT2-UX-001 – TransactionsTable searchQuery (High, Fixed)
+- BUG-FEAT2-UX-002 – ThemeToggle SVG + Touch-Target (High, Fixed)
+- BUG-FEAT2-UX-003 – Suchleiste Mobile (Medium, Fixed)
+- BUG-FEAT2-UX-004 – sr-only label (Medium, Fixed)
+
+### Summary
+- ✅ 10/10 ACs passed | ✅ 7 Bugs gefixt
+
+### Production-Ready
+✅ Ready

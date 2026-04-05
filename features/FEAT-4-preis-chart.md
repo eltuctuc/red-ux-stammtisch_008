@@ -204,3 +204,19 @@ Wenn `selectedCoin` wechselt, berechnet `PriceChart` automatisch neuen `chartDat
 
 ### Fortschritt
 - Status: Freigegeben, Aktueller Schritt: Tech
+
+## 5. QA Ergebnisse
+*2026-04-05*
+
+### Acceptance Criteria Status
+- [x] AC-4.1–4.9 ✅ Alle ACs passed
+
+### Bekannte Bugs (unter Fix-Schwelle)
+- BUG-FEAT4-QA-009 – formatDate edge case bei null (Low, Known Issue)
+- BUG-FEAT4-UX-002 – Timeframe-Button Kontrast Dark Mode (Low, Known Issue)
+
+### Summary
+- ✅ 9/9 ACs passed | 2 Low Known Issues
+
+### Production-Ready
+⚠️ Ready with Known Issues (2 Low)

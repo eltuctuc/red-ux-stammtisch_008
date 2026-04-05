@@ -161,3 +161,28 @@ export const portfolioData = {
 
 ### Fortschritt
 - Status: Freigegeben, Aktueller Schritt: Tech
+
+## 5. QA Ergebnisse
+*2026-04-05*
+
+### Acceptance Criteria Status
+- [x] AC-3.1 ✅ formatPrice, responsive Schriftgrad
+- [x] AC-3.2 ✅ USD + Prozent angezeigt
+- [x] AC-3.3 ✅ ChangeBadge grün/rot/neutral
+- [x] AC-3.4 ✅ ResponsiveContainer + AreaChart
+- [x] AC-3.5 ✅ Kein Tooltip (gemäß Spec)
+- [x] AC-3.6 ✅ Glassmorphism
+- [x] AC-3.7 ✅ hover-Prop auf GlassCard
+- [x] AC-3.8 ✅ Theme-reaktive CSS-Vars
+
+### Behobene Bugs
+- BUG-FEAT3-QA-007 – Sparkline Tooltip entfernt (Low, Fixed)
+- BUG-FEAT3-QA-010 – hover-Prop ergänzt (Low, Fixed)
+- BUG-FEAT3-UX-001 – hover-Animation jetzt vorhanden (High, Fixed)
+- BUG-FEAT3-UX-002 – Tooltip widerspricht Spec, entfernt (Medium, Fixed)
+
+### Summary
+- ✅ 8/8 ACs passed | ✅ 4 Bugs gefixt
+
+### Production-Ready
+✅ Ready

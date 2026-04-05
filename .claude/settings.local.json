@@ -19,7 +19,23 @@
       "Bash(git push:*)",
       "Bash(npm create:*)",
       "Bash(npm install:*)",
-      "Bash(git tag:*)"
+      "Bash(git tag:*)",
+      "Bash(gh auth:*)",
+      "Bash(gh repo:*)",
+      "Bash([ -f project-config.md ])",
+      "Bash(ls features/FEAT-*.md)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run:*)",
+      "Bash(curl -s http://localhost:5173/)",
+      "Bash(git -C /Users/enricoreinsdorf/Projekte/red-ux-stammtisch_008 log --oneline -10)",
+      "Bash(git -C /Users/enricoreinsdorf/Projekte/red-ux-stammtisch_008 diff --name-only HEAD~1)",
+      "Bash(node -e ':*)",
+      "Bash(grep \"^Fix-Schwelle:\" /Users/enricoreinsdorf/Projekte/red-ux-stammtisch_008/features/*.md)",
+      "Bash(sed -i '' 's/^status: open/status: Fixed/' bugs/BUG-FEAT2-QA-008.md)",
+      "Bash(sed -i '' 's/^status: open/status: Fixed/' bugs/BUG-FEAT6-UX-003.md)",
+      "Bash(npm version:*)",
+      "Bash(sed -i '' 's/Aktuelle Version: 0.0.0/Aktuelle Version: 0.1.0/' project-config.md)",
+      "Bash(sed -i '' 's/Nächste Version: 0.1.0/Nächste Version: 0.2.0/' project-config.md)"
     ],
     "additionalDirectories": [
       "/Users/enricoreinsdorf/Projekte/red-ux-stammtisch_008/.claude"

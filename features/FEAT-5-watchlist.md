@@ -241,3 +241,21 @@ Leerer `searchQuery` → `filteredCoins === coins` (alle anzeigen).
 
 ### Fortschritt
 - Status: Freigegeben, Aktueller Schritt: Tech
+
+## 5. QA Ergebnisse
+*2026-04-05*
+
+### Acceptance Criteria Status
+- [x] AC-5.1–5.10 ✅ Alle ACs passed
+
+### Behobene Bugs
+- BUG-FEAT5-QA-004 – Mobile Leer-State (Medium, Fixed)
+- BUG-FEAT5-UX-001 – Mobile Leer-State (High, Fixed)
+- BUG-FEAT5-UX-002 – aria-pressed → aria-current (Medium, Fixed)
+- BUG-FEAT5-UX-003 – MiniSparkline Margins (Low, Fixed)
+
+### Summary
+- ✅ 10/10 ACs passed | ✅ 4 Bugs gefixt
+
+### Production-Ready
+✅ Ready

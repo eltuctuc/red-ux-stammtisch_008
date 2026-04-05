@@ -13,6 +13,7 @@ export default function ChartTooltip({ active, payload, label }) {
         backgroundColor: 'var(--bg-elevated)',
         border: '1px solid var(--border)',
         color: 'var(--text-primary)',
+        backdropFilter: 'blur(8px)',
       }}
     >
       {date && (
