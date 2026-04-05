@@ -1,0 +1,81 @@
+---
+status: approved
+---
+
+# FEAT-5: Watchlist
+*Erstellt von: /red:proto-requirements — 2026-04-05*
+
+## Meta
+- **Feature-ID:** FEAT-5
+- **Feature-Name:** Watchlist
+- **Zielgruppe:** Markus (Demo-Interaktion), Lena (visuelle Qualität), Demo-Publikum
+- **Abhängigkeiten:** FEAT-1 (Mock-Daten), FEAT-4 (Coin-Selektion steuert Chart), FEAT-2 (Suchfilter)
+- **Fix-Schwelle:** Critical, High (Funktionierender Prototyp)
+
+## Kernwert
+Die Watchlist ist das primäre Navigations-Element: Coin auswählen → Chart aktualisiert sich. Dieser Interaktions-Moment ist der stärkste visuelle Beweis dass die App echten State hat.
+
+## Nicht im Scope
+- Coins zur Watchlist hinzufügen oder entfernen
+- Reihenfolge per Drag & Drop anpassen
+- Alarm / Price Alert setzen
+- Klick auf Coin öffnet Detailseite
+
+---
+
+## User Stories
+
+**US-5.1** Als Nutzer möchte ich 6 Kryptowährungen in der Watchlist auf einen Blick sehen (BTC, ETH, SOL, BNB, ADA, XRP), damit ich die wichtigsten Coins im Überblick habe.
+
+**US-5.2** Als Nutzer möchte ich einen Coin in der Watchlist anklicken um ihn zu selektieren, damit der Haupt-Chart sofort den Preisverlauf dieses Coins zeigt.
+
+**US-5.3** Als Demo-Zuschauer möchte ich dass der aktiv selektierte Coin visuell hervorgehoben ist, damit der Zusammenhang zwischen Watchlist und Chart klar erkennbar ist.
+
+**US-5.4** Als Nutzer auf dem Desktop möchte ich die Watchlist als vertikale Sidebar rechts neben dem Chart sehen, damit ich schnell zwischen Coins wechseln kann ohne zu scrollen.
+
+**US-5.5** Als Nutzer auf dem Smartphone möchte ich die Watchlist als horizontalen Scroll-Strip unterhalb des Charts sehen, damit das Layout auf kleinen Bildschirmen nicht bricht.
+
+**US-5.6** Als Nutzer möchte ich pro Coin-Eintrag sehen: Coin-Icon, Name, Symbol, aktuellen Preis, 24h-Änderung (%), Mini-Sparkline.
+
+---
+
+## Acceptance Criteria
+
+**AC-5.1** Die Watchlist enthält genau 6 Einträge: BTC, ETH, SOL, BNB, ADA, XRP – in dieser Reihenfolge.
+
+**AC-5.2** Jeder Eintrag zeigt: Coin-Icon (SVG oder Emoji als Fallback), Name, Symbol, Preis (formatiert: "$42,350.00"), 24h-Änderung (formatiert: "+2.65%" oder "-1.23%"), Mini-Sparkline (7 Tage, 40–60px breit, keine Achsen/Tooltips).
+
+**AC-5.3** 24h-Änderung: positiv = grüne Farbe, negativ = rote Farbe.
+
+**AC-5.4** Klick auf einen Eintrag setzt diesen Coin als `selectedCoin` im globalen State – der Preis-Chart (FEAT-4) reagiert sofort.
+
+**AC-5.5** Der aktiv selektierte Coin-Eintrag hat einen visuellen Highlight-State: accent-farbige linke Border oder leicht erhöhter Hintergrund – deutlich erkennbar ohne aufdringlich zu wirken.
+
+**AC-5.6** Desktop (≥1024px): Watchlist ist eine vertikale Sidebar mit fester Breite (240–280px). Die Einträge sind vertikal gestapelt, scrollbar wenn Inhalte überlaufen.
+
+**AC-5.7** Mobile (<768px): Watchlist wird zu einem horizontal scrollbaren Strip. Jeder Eintrag ist eine kompakte Karte (~140px breit). Horizontal scrollen ist flüssig (`overflow-x: auto`, kein Snap nötig).
+
+**AC-5.8** Suchfilter aus FEAT-2: Coins die nicht dem Suchbegriff entsprechen werden ausgeblendet. Wenn alle Coins gefiltert sind: "Keine Treffer"-Hinweis in der Watchlist.
+
+**AC-5.9** Jede Watchlist-Karte hat Hover-Animation: leichte Aufhellung des Hintergrunds + `cursor: pointer`.
+
+**AC-5.10** Mini-Sparklines sind Recharts-Komponenten mit `background: transparent` – kein weißer Hintergrund.
+
+---
+
+## Edge Cases
+
+**EC-5.1** Suchfilter blendet den aktuell selektierten Coin aus: Selektion bleibt im State, der Chart zeigt weiterhin diesen Coin – nur die Watchlist-Anzeige filtert.
+
+**EC-5.2** Alle 6 Coins werden durch Suche ausgeblendet: "Keine Treffer"-Hinweis erscheint, Chart bleibt unverändert.
+
+**EC-5.3** Horizontaler Scroll-Strip auf Mobile mit Touch-Gerät: Scrollen funktioniert nativ, keine JS-Scroll-Bibliothek nötig.
+
+**EC-5.4** Coin mit negativem 24h-Wert und positiver Sparkline (oder umgekehrt): Beide Werte werden unabhängig korrekt gefärbt.
+
+**EC-5.5** Viewport zwischen Desktop und Mobile beim Resize: Layout wechselt flüssig zwischen Sidebar und Strip-Ansicht, kein State-Reset.
+
+---
+
+## Fortschritt
+- Status: Freigegeben
