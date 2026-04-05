@@ -1,9 +1,44 @@
-function App() {
+import { useState } from 'react'
+import { ThemeProvider } from './context/ThemeContext.jsx'
+import AppLayout from './components/layout/AppLayout.jsx'
+import Header from './components/header/Header.jsx'
+import PortfolioHero from './components/portfolio/PortfolioHero.jsx'
+import PriceChart from './components/chart/PriceChart.jsx'
+import WatchlistSidebar from './components/watchlist/WatchlistSidebar.jsx'
+import TransactionsTable from './components/transactions/TransactionsTable.jsx'
+import { coins } from './data/coins.js'
+
+export default function App() {
+  const [selectedCoin, setSelectedCoin] = useState(coins[0])
+  const [selectedTimeframe, setSelectedTimeframe] = useState('1W')
+  const [searchQuery, setSearchQuery] = useState('')
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 flex items-center justify-center">
-      <h1 className="text-4xl font-bold">Cryptofolio</h1>
-    </div>
+    <ThemeProvider>
+      <AppLayout
+        header={
+          <Header
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+          />
+        }
+        portfolioHero={<PortfolioHero />}
+        priceChart={
+          <PriceChart
+            coin={selectedCoin}
+            timeframe={selectedTimeframe}
+            onTimeframeChange={setSelectedTimeframe}
+          />
+        }
+        watchlist={
+          <WatchlistSidebar
+            selectedCoin={selectedCoin}
+            onCoinSelect={setSelectedCoin}
+            searchQuery={searchQuery}
+          />
+        }
+        transactions={<TransactionsTable />}
+      />
+    </ThemeProvider>
   )
 }
-
-export default App
