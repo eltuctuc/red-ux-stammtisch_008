@@ -119,5 +119,45 @@ Die Hero-Karte ist die erste vollständige Glassmorphism-Karte die der Nutzer si
 - `isAnimationActive={false}`
 - `dot={false}`
 
+---
+
+## 3. Technisches Design
+*Erstellt von: /red:proto-architect — 2026-04-05*
+
+### State-Komplexität
+Keine – reine Anzeige-Komponente, kein lokaler State.
+
+### Komponenten
+
+**PortfolioHero.jsx** – Presentational Component
+- Keine Props – importiert Mock-Daten direkt aus `data/coins.js`
+- Berechnet `totalValue` als Summe der Mock-Portfolio-Gewichtung (hardcoded Mengen im Mock)
+- Berechnet `totalChange24hUSD` und `totalChange24hPct` aus coins-Daten
+- Rendert `<GlassCard hover>` mit Wert, Change-Badge, Sparkline
+
+**Alternative (bevorzugt für Showcase):** Portfolio-Gesamtwert und 24h-Änderung direkt als Konstanten in Mock-Daten definieren (`portfolioTotal: 47823.50`, `portfolioChange24hPct: 2.65`) – vermeidet komplexe Berechnungslogik, bleibt fokussiert auf Visualisierung.
+
+**PortfolioSparkline.jsx** – Sub-Komponente
+- Props: `data: [{date, price}]`, `color: string`
+- Recharts `<LineChart width={120} height={48}>` mit fester Größe (kein ResponsiveContainer)
+- `isAnimationActive={false}`, `dot={false}`
+- Alle Achsen und Grid hidden
+
+### Daten-Abhängigkeit
+Importiert `portfolioData` aus `data/portfolio.js` (separates Mock-File für Portfolio-Gesamt):
+```js
+// data/portfolio.js
+export const portfolioData = {
+  totalValue: 47823.50,
+  change24hUSD: 1234.56,
+  change24hPct: 2.65,
+  sparkline7d: [/* 7 Datenpunkte */],
+}
+```
+
+### A11y
+- `<section aria-label="Portfolio-Übersicht">`
+- Gesamtwert: `<p>` mit sichtbarem Text – kein aria-live (kein echter Update)
+
 ### Fortschritt
-- Status: Freigegeben, Aktueller Schritt: UX
+- Status: Freigegeben, Aktueller Schritt: Tech

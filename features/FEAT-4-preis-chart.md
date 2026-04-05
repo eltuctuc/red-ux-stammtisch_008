@@ -144,5 +144,63 @@ Der Preis-Chart ist das visuelle Herzstück und nimmt den größten Bereich des 
 | Zeitraum-Buttons Mobile | 44px als Tabs | ✅ | volle Breite, 44px Höhe |
 | Chart selbst (Hover) | – | n/a | Keine Touch-Target-Anforderung |
 
+---
+
+## 3. Technisches Design
+*Erstellt von: /red:proto-architect — 2026-04-05*
+
+### State-Komplexität
+Keine State Machine – `selectedTimeframe` ist ein einzelner String-State. `selectedCoin` wird als Prop von App.jsx geliefert.
+
+### Komponenten
+
+**PriceChart.jsx** – Container-Komponente
+- Props: `selectedCoin: string`, `selectedTimeframe: string`, `onTimeframeChange: func`
+- Importiert `coinsMap` aus `data/coins.js`
+- Berechnet `chartData = coinsMap[selectedCoin].priceHistory[selectedTimeframe]`
+- Rendert: Karten-Header (Coin-Info + Zeitraum-Buttons) + AreaChart
+
+**TimeframeSelector.jsx** – Presentational
+- Props: `value: string`, `onChange: func`
+- Rendert 4 Buttons ("1T", "1W", "1M", "3M")
+- Aktiver Button via `value === btn ? activeStyle : inactiveStyle`
+
+**ChartTooltip.jsx** – Custom Recharts Tooltip
+- Props: `active`, `payload`, `label` (Standard Recharts Tooltip-Props)
+- Rendert GlassmorphismBox mit `formatDate(label)` + `formatPrice(payload[0]?.value)`
+- Inline-Style mit CSS-Vars für Glassmorphism (da Recharts contentStyle direkt an DOM geht)
+
+### Recharts-Konfiguration
+
+```jsx
+<ResponsiveContainer width="100%" height={280}>
+  <AreaChart data={chartData} background="transparent">
+    <defs>
+      <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="5%" stopColor="var(--accent)" stopOpacity={0.3} />
+        <stop offset="95%" stopColor="var(--accent)" stopOpacity={0} />
+      </linearGradient>
+    </defs>
+    <XAxis dataKey="date" ... />
+    <YAxis tickFormatter={formatYAxis} ... />
+    <CartesianGrid strokeDasharray="4 4" ... />
+    <Tooltip content={<ChartTooltip />} ... />
+    <Area dataKey="price" stroke="var(--accent)" fill="url(#colorGradient)"
+          isAnimationActive={true} animationDuration={600} dot={false} />
+  </AreaChart>
+</ResponsiveContainer>
+```
+
+**Wichtig:** `background="transparent"` muss direkt am `<AreaChart>` gesetzt werden, nicht am Container. Recharts setzt sonst einen weißen SVG-Hintergrund.
+
+### Chart-Update bei Coin-Wechsel
+
+Wenn `selectedCoin` wechselt, berechnet `PriceChart` automatisch neuen `chartData` aus `coinsMap`. Kein Key-Reset nötig – Recharts animiert den Update intern. Zeitraum bleibt erhalten (State in App.jsx).
+
+### A11y
+- `<section aria-label="Preis-Chart für [Coin-Name]">`
+- Zeitraum-Buttons: `<button type="button" aria-pressed={isActive}>`
+- Chart selbst: `<AreaChart aria-hidden="true">` + Daten-Tabelle als `<table class="sr-only">` (optional für vollständige Barrierefreiheit)
+
 ### Fortschritt
-- Status: Freigegeben, Aktueller Schritt: UX
+- Status: Freigegeben, Aktueller Schritt: Tech

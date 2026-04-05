@@ -241,5 +241,190 @@ Recharts Sparklines: `isAnimationActive={false}` (Performance)
 
 ---
 
-## Fortschritt
-- Status: Freigegeben, Aktueller Schritt: UX
+## 3. Technisches Design
+*Erstellt von: /red:proto-architect — 2026-04-05*
+
+### State-Komplexität
+State Machine nicht erforderlich – kein Edit-Modus, kein Multi-Step, keine Race Conditions.
+
+### Externe Daten: Validation-Strategie (localStorage)
+```
+Quelle: localStorage ('cryptofolio-theme')
+Validation: try/catch + Whitelist-Check ('dark' | 'light')
+Fallback: 'dark'
+
+function getStoredTheme() {
+  try {
+    const v = localStorage.getItem('cryptofolio-theme')
+    return (v === 'dark' || v === 'light') ? v : 'dark'
+  } catch { return 'dark' }
+}
+```
+
+### Verzeichnis-Struktur
+
+```
+projekt/src/
+├── data/
+│   ├── coins.js              Mock-Daten: 6 Coins
+│   └── transactions.js       Mock-Daten: 5 Transaktionen
+├── context/
+│   └── ThemeContext.jsx      Provider + useTheme Hook
+├── components/
+│   ├── layout/
+│   │   └── AppLayout.jsx     Haupt-Layout mit Header + Grid
+│   ├── header/               → FEAT-2
+│   ├── portfolio/            → FEAT-3
+│   ├── chart/                → FEAT-4
+│   ├── watchlist/            → FEAT-5
+│   ├── transactions/         → FEAT-6
+│   └── ui/
+│       ├── GlassCard.jsx     Glassmorphism-Wrapper-Komponente
+│       └── Badge.jsx         Kauf/Verkauf/Prozent-Badge
+├── utils/
+│   └── formatters.js         formatPrice, formatDate, formatPercent
+├── App.jsx                   Root: globaler State + Provider
+├── main.jsx
+└── index.css                 Tailwind + CSS Custom Properties
+```
+
+### Daten-Modell: coins.js
+
+```js
+// coins.js – ein Array, direkt importierbar
+export const coins = [
+  {
+    id: "bitcoin",          // Slug für Keys
+    symbol: "BTC",
+    name: "Bitcoin",
+    price: 42350.00,
+    change24hPct: 2.65,     // Prozent
+    change24hUSD: 1095.67,  // Absoluter Betrag
+    priceHistory: {
+      "1T": [/* 24 Objekte: { date, price } */],
+      "1W": [/* 7 Objekte */],
+      "1M": [/* 30 Objekte */],
+      "3M": [/* 90 Objekte */],
+    },
+    sparkline7d: [/* 7 Objekte: { date, price } */],
+  },
+  // ETH, SOL, BNB, ADA, XRP ...
+]
+
+// Lookup-Map für O(1)-Zugriff:
+export const coinsMap = Object.fromEntries(coins.map(c => [c.symbol, c]))
+```
+
+**Preisverlauf-Generierung:** Geschwungene Kurven via Sinus/Cosinus-Superposition mit realistischen Basiswerten. KEINE Math.random() – deterministisch damit die Daten bei jedem Reload identisch sind.
+
+### Daten-Modell: transactions.js
+
+```js
+export const transactions = [
+  {
+    id: "t1",
+    date: "2025-03-12",     // ISO-String, Anzeige durch formatDate()
+    type: "buy",            // "buy" | "sell"
+    symbol: "BTC",
+    coinName: "Bitcoin",
+    amount: 0.012345,
+    pricePerUnit: 42350.00,
+    total: 522.55,
+  },
+  // 4 weitere, Mix aus buy/sell, verschiedene Coins
+]
+```
+
+### ThemeContext
+
+```
+ThemeContext stellt bereit:
+  theme: "dark" | "light"
+  toggleTheme: () => void
+
+Provider-Logik:
+  1. Initial: getStoredTheme() → setzt theme-State
+  2. toggleTheme: wechselt State → schreibt localStorage → setzt html.className
+  3. useEffect bei theme-Änderung: document.documentElement.className = theme
+```
+
+### No-Flicker Pattern (index.html)
+
+Inline-Script VOR React-Mount, direkt im `<head>`:
+```html
+<script>
+  (function(){
+    try {
+      var t = localStorage.getItem('cryptofolio-theme');
+      document.documentElement.className = (t==='light') ? 'light' : 'dark';
+    } catch(e) {
+      document.documentElement.className = 'dark';
+    }
+  })();
+</script>
+```
+Wichtig: Muss VOR `<link>` und `<script type="module">` stehen.
+
+### Tailwind v4 Dark Mode
+
+Tailwind v4 verwendet CSS-basierte Konfiguration. Dark-Mode über `.dark`-Klasse auf `<html>`:
+
+```css
+/* index.css */
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* CSS Custom Properties (aus FEAT-1 UX-Tokens): */
+:root {
+  --bg-page: #f1f5f9;
+  --bg-surface: rgba(255,255,255,0.80);
+  /* ... alle Light-Token */
+}
+
+.dark {
+  --bg-page: #0a0b0f;
+  --bg-surface: rgba(255,255,255,0.04);
+  /* ... alle Dark-Token */
+}
+```
+
+Tailwind-Klassen referenzieren die CSS-Vars via `[var(--bg-page)]`-Syntax.
+
+### GlassCard.jsx (Shared Component)
+
+Wrapper-Komponente die den Glassmorphism-Stil kapselt. Props: `className`, `hover` (bool), `children`. Alle Feature-Karten nutzen diese Komponente – keine duplizierten Glassmorphism-Styles.
+
+### formatters.js
+
+```
+formatPrice(value): "$42,350.00"  → Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })
+formatPercent(value): "+2.65%"   → Vorzeichen + 2 Dezimalstellen
+formatDate(isoString): "12. März 2025" → Intl.DateTimeFormat('de-DE', { day: 'numeric', month: 'long', year: 'numeric' })
+```
+
+### App-Root State
+
+```
+App.jsx verwaltet:
+  selectedCoin: string = "BTC"
+  selectedTimeframe: "1T" | "1W" | "1M" | "3M" = "1M"
+  searchQuery: string = ""
+
+Weitergabe als Props:
+  Header: searchQuery, setSearchQuery
+  WatchlistSidebar: selectedCoin, setSelectedCoin, searchQuery
+  PriceChart: selectedCoin, selectedTimeframe, setSelectedTimeframe
+  TransactionsTable: searchQuery
+```
+
+### A11y
+- `<html lang="de">`
+- ThemeToggle: `aria-label="Dark Mode aktivieren"` / `"Light Mode aktivieren"`
+- GlassCard: semantisches HTML (`<section>`, `<article>` wo sinnvoll)
+
+### Dependencies
+- Keine neuen npm-Packages nötig – alle Funktionen mit React 18, Vite, Tailwind v4, Recharts abgedeckt
+
+### Fortschritt
+- Status: Freigegeben, Aktueller Schritt: Tech

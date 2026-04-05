@@ -146,5 +146,76 @@ Die Transaktions-Tabelle ist das letzte Element im Main-Bereich, unter dem Preis
 
 *(Zeilen sind nicht klickbar – kein Navigations-Ziel, nur Anzeige)*
 
+---
+
+## 3. Technisches Design
+*Erstellt von: /red:proto-architect — 2026-04-05*
+
+### State-Komplexität
+Keine – reine Anzeige-Komponente, `searchQuery` kommt als Prop.
+
+### Komponenten
+
+**TransactionsTable.jsx** – Container
+- Props: `searchQuery: string`
+- Importiert `transactions` aus `data/transactions.js`
+- Filtert nach `searchQuery`: Symbol oder Typ enthält den Suchbegriff
+- Rendert `<GlassCard>` + `<table>`
+
+### Filterlogik
+
+```js
+const filteredTransactions = transactions.filter(tx =>
+  tx.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  tx.type.toLowerCase().includes(searchQuery.toLowerCase())
+)
+```
+
+### Mobile-Spalten-Hiding
+
+Tailwind-Responsive-Klassen auf `<th>` und `<td>`:
+```jsx
+// Menge-Spalte: nur ab md sichtbar
+<th className="hidden md:table-cell">Menge</th>
+<td className="hidden md:table-cell">{formatAmount(tx.amount, tx.symbol)}</td>
+
+// Preis-Spalte: nur ab md sichtbar
+<th className="hidden md:table-cell">Preis</th>
+<td className="hidden md:table-cell">{formatPrice(tx.pricePerUnit)}</td>
+```
+
+### Typ-Badge
+
+```jsx
+// Inline-Komponente in TransactionsTable.jsx
+function TypeBadge({ type }) {
+  const isBuy = type === "buy"
+  return (
+    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium
+      ${isBy ? "bg-[var(--green-bg)] text-[var(--green)]" : "bg-[var(--red-bg)] text-[var(--red)]"}`}>
+      {isBy ? "↑" : "↓"} {isBy ? "Kauf" : "Verkauf"}
+    </span>
+  )
+}
+```
+
+### Leer-State
+
+```jsx
+{filteredTransactions.length === 0 && (
+  <tr>
+    <td colSpan={6} className="text-center py-8 text-[var(--text-secondary)]">
+      Keine Transaktionen gefunden
+    </td>
+  </tr>
+)}
+```
+
+### A11y
+- `<section aria-label="Letzte Transaktionen">`
+- `<table>` mit `<caption class="sr-only">Letzte 5 Transaktionen</caption>`
+- `<th scope="col">` auf alle Header-Zellen
+- `tabindex="0"` auf Tabellen-Container für Keyboard-Scrollbarkeit auf Mobile
+
 ### Fortschritt
-- Status: Freigegeben, Aktueller Schritt: UX
+- Status: Freigegeben, Aktueller Schritt: Tech

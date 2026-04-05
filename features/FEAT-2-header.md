@@ -129,5 +129,56 @@ Der Header ist eine permanente, sticky Top-Bar. Keine Drawer, kein Hamburger-Men
 | Theme-Toggle Button | 40px visuell | ❌ | 2px padding-y im Wrapper → 44px effektiv |
 | Suchleiste | 40px | ❌ | 2px padding-y im Container → 44px effektiv |
 
+---
+
+## 3. Technisches Design
+*Erstellt von: /red:proto-architect — 2026-04-05*
+
+### State-Komplexität
+State Machine nicht erforderlich – `searchQuery` ist ein einzelner String-State ohne Edit-/Save-Logik.
+
+### Komponenten
+
+**Header.jsx** – Container-Komponente
+- Props: `searchQuery: string`, `setSearchQuery: func`
+- Holt `theme` + `toggleTheme` aus `useTheme()` Hook intern
+- Rendert: Logo-Bereich, SearchInput, ThemeToggle
+- Kein lokaler State – alles über Props oder Context
+
+**SearchInput.jsx**
+- Props: `value: string`, `onChange: func`
+- Controlled `<input type="search">` mit `value={value}` + `onChange={e => onChange(e.target.value)}`
+- `type="search"` gibt Browser-natives Clear-Button geschenkt (auf iOS/Chrome)
+- `autoComplete="off"`, `spellCheck="false"`, `autoCorrect="off"`
+
+**ThemeToggle.jsx**
+- Kein Props – nutzt `useTheme()` intern
+- Rendert entweder Mond-Icon oder Sonnen-Icon je nach `theme`
+- Icons: Inline SVG (kein Icon-Library-Import), 20×20px
+
+### Responsive Layout
+
+Desktop (≥768px): CSS Flexbox, eine Zeile
+```css
+header { display: flex; align-items: center; gap: 16px; }
+.search-wrapper { flex: 1; max-width: 400px; }
+```
+
+Mobile (<768px): CSS Flex-Wrap + full-width Suche
+```css
+@media (max-width: 767px) {
+  header { flex-wrap: wrap; }
+  .logo { flex: 1; }
+  .search-wrapper { order: 3; flex: 0 0 100%; }
+}
+```
+Kein JS für Layout-Wechsel – pure CSS.
+
+### A11y
+- `<header role="banner">`
+- Suchfeld: `<label for="search" class="sr-only">Suchen</label>` + `id="search"`
+- ThemeToggle: `aria-label` dynamisch: `"Zu Light Mode wechseln"` / `"Zu Dark Mode wechseln"`
+- Toggle ist `<button type="button">` (kein `div`)
+
 ### Fortschritt
-- Status: Freigegeben, Aktueller Schritt: UX
+- Status: Freigegeben, Aktueller Schritt: Tech

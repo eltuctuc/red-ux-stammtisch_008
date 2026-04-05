@@ -172,5 +172,72 @@ Pro Karte im Strip:
 | Coin-Eintrag Desktop | 64px | ✅ | Native |
 | Coin-Karte Mobile Strip | 96px | ✅ | Native |
 
+---
+
+## 3. Technisches Design
+*Erstellt von: /red:proto-architect — 2026-04-05*
+
+### State-Komplexität
+Kein State Machine – `selectedCoin` und `searchQuery` kommen als Props, kein lokaler State außer ggf. Hover (CSS-only, kein JS).
+
+### Komponenten
+
+**WatchlistSidebar.jsx** – Container
+- Props: `selectedCoin: string`, `onCoinSelect: func`, `searchQuery: string`
+- Filtert `coins` nach `searchQuery` → `filteredCoins`
+- Rendert auf Desktop `<WatchlistItem>` vertikal; auf Mobile `<WatchlistStrip>` horizontal
+- Kein JS für Breakpoint-Erkennung – CSS `hidden lg:block` / `block lg:hidden`
+
+**WatchlistItem.jsx** – Desktop Coin-Eintrag (Presentational)
+- Props: `coin`, `isSelected: bool`, `onSelect: func`
+- Rendert: Icon-Badge, Name, Symbol, Preis, Change-Badge, Mini-Sparkline
+- Aktiv-State via `isSelected` → Tailwind-Conditional-Klassen
+
+**WatchlistStrip.jsx** – Mobile horizontaler Strip
+- Props: gleiche wie WatchlistSidebar (filteredCoins, selectedCoin, onSelect)
+- `<div className="flex overflow-x-auto gap-2 pb-2 scrollbar-hide">`
+- Rendert `<WatchlistCard>` pro Coin
+
+**WatchlistCard.jsx** – Mobile kompakte Karte (Presentational)
+- Props: `coin`, `isSelected: bool`, `onSelect: func`
+- Kompaktere Version von WatchlistItem
+
+**MiniSparkline.jsx** – Shared Sparkline
+- Props: `data: [{date, price}]`, `color: string`, `width: number`, `height: number`
+- Recharts `<LineChart>` mit fester Größe, keine Achsen
+- Nutzt von FEAT-3 und FEAT-5
+
+### Responsive Strategie
+
+**CSS-only, kein JS-Breakpoint-Hook:**
+```jsx
+<>
+  {/* Desktop: nur ab lg sichtbar */}
+  <aside className="hidden lg:flex flex-col w-64 ...">
+    {filteredCoins.map(coin => <WatchlistItem ... />)}
+  </aside>
+  {/* Mobile: bis lg sichtbar */}
+  <div className="flex lg:hidden overflow-x-auto gap-2 ...">
+    {filteredCoins.map(coin => <WatchlistCard ... />)}
+  </div>
+</>
+```
+
+### Filterlogik
+
+```js
+const filteredCoins = coins.filter(coin =>
+  coin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  coin.symbol.toLowerCase().includes(searchQuery.toLowerCase())
+)
+```
+
+Leerer `searchQuery` → `filteredCoins === coins` (alle anzeigen).
+
+### A11y
+- `<aside aria-label="Watchlist">` (Desktop)
+- Coin-Einträge: `<button role="option" aria-selected={isSelected}>` (keine echte Listbox, aber semantisch passend)
+- Aktiver Coin: `aria-selected="true"`
+
 ### Fortschritt
-- Status: Freigegeben, Aktueller Schritt: UX
+- Status: Freigegeben, Aktueller Schritt: Tech
