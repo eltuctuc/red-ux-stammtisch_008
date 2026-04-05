@@ -4,50 +4,51 @@
 
 /* ─── Light Theme (Default) ─────────────────────────────── */
 :root {
-  --bg-page:         #f1f5f9;
-  --bg-surface:      rgba(255, 255, 255, 0.80);
-  --bg-surface-high: rgba(255, 255, 255, 0.95);
-  --border:          rgba(0, 0, 0, 0.07);
+  --bg-page:         #f0f2f8;
+  --bg-surface:      rgba(255, 255, 255, 0.85);
+  --bg-surface-high: rgba(255, 255, 255, 0.97);
+  --bg-elevated:     #ffffff;
+  --border:          rgba(0, 0, 0, 0.09);
   --text-primary:    #0f172a;
-  --text-secondary:  #64748b;
+  --text-secondary:  #475569;
   --text-muted:      #94a3b8;
   --accent:          #4f46e5;
   --accent-muted:    rgba(79, 70, 229, 0.08);
   --accent-bg:       rgba(79, 70, 229, 0.10);
-  --bg-elevated:     rgba(255, 255, 255, 0.95);
   --green:           #059669;
   --green-bg:        rgba(5, 150, 105, 0.10);
   --red:             #dc2626;
   --red-bg:          rgba(220, 38, 38, 0.10);
 
-  --glass-shadow:    0 4px 24px rgba(0, 0, 0, 0.08),
-                     0 1px 0 rgba(255, 255, 255, 0.80) inset;
-  --glass-shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.14),
-                        0 1px 0 rgba(255, 255, 255, 0.80) inset;
+  --glass-shadow:    0 4px 32px rgba(0, 0, 0, 0.08),
+                     0 1px 0 rgba(255, 255, 255, 0.90) inset;
+  --glass-shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.14),
+                        0 1px 0 rgba(255, 255, 255, 0.90) inset;
 }
 
 /* ─── Dark Theme ─────────────────────────────────────────── */
 .dark {
-  --bg-page:         #0a0b0f;
-  --bg-surface:      rgba(255, 255, 255, 0.04);
-  --bg-surface-high: rgba(255, 255, 255, 0.07);
-  --border:          rgba(255, 255, 255, 0.08);
+  --bg-page:         #080a10;
+  /* Cards: solid elevated surface – clearly lighter than the page */
+  --bg-surface:      rgba(24, 27, 52, 0.96);
+  --bg-surface-high: rgba(30, 33, 62, 0.98);
+  --bg-elevated:     rgba(30, 33, 62, 0.99);
+  --border:          rgba(255, 255, 255, 0.10);
   --text-primary:    #f1f5f9;
-  --text-secondary:  #64748b;
-  --text-muted:      #334155;
+  --text-secondary:  #8b9eb8;
+  --text-muted:      #4f6280;
   --accent:          #818cf8;
-  --accent-muted:    rgba(129, 140, 248, 0.10);
-  --accent-bg:       rgba(129, 140, 248, 0.12);
-  --bg-elevated:     rgba(30, 32, 48, 0.95);
+  --accent-muted:    rgba(129, 140, 248, 0.12);
+  --accent-bg:       rgba(129, 140, 248, 0.15);
   --green:           #10b981;
-  --green-bg:        rgba(16, 185, 129, 0.12);
+  --green-bg:        rgba(16, 185, 129, 0.13);
   --red:             #f87171;
-  --red-bg:          rgba(248, 113, 113, 0.12);
+  --red-bg:          rgba(248, 113, 113, 0.13);
 
-  --glass-shadow:    0 4px 24px rgba(0, 0, 0, 0.40),
-                     0 1px 0 rgba(255, 255, 255, 0.05) inset;
-  --glass-shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.50),
-                        0 1px 0 rgba(255, 255, 255, 0.05) inset;
+  --glass-shadow:    0 4px 32px rgba(0, 0, 0, 0.55),
+                     0 1px 0 rgba(255, 255, 255, 0.08) inset;
+  --glass-shadow-hover: 0 16px 48px rgba(0, 0, 0, 0.70),
+                        0 1px 0 rgba(255, 255, 255, 0.12) inset;
 }
 
 /* ─── Base Reset ─────────────────────────────────────────── */
@@ -63,11 +64,25 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ─── Page Background ────────────────────────────────────── */
+/* Light: subtle warm gradient */
 body {
   background-color: var(--bg-page);
+  background-image:
+    radial-gradient(ellipse 70% 50% at 15% 0%,   rgba(79, 70, 229, 0.07) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 40% at 85% 100%,  rgba(5, 150, 105, 0.05) 0%, transparent 65%);
   color: var(--text-primary);
   transition: background-color 300ms ease, color 300ms ease;
   min-height: 100svh;
+}
+
+/* Dark: ambient accent glows – subtle enough to keep cards clearly visible */
+.dark body {
+  background-color: var(--bg-page);
+  background-image:
+    radial-gradient(ellipse 75% 55% at 8%  2%,   rgba(79,  70, 229, 0.14) 0%, transparent 55%),
+    radial-gradient(ellipse 55% 45% at 92% 98%,  rgba(16, 185, 129, 0.10) 0%, transparent 55%),
+    radial-gradient(ellipse 45% 35% at 55% 48%,  rgba(129, 140, 248, 0.05) 0%, transparent 50%);
 }
 
 /* ─── Scrollbar Hide Utility ─────────────────────────────── */
@@ -96,6 +111,19 @@ body {
 .glass-card-hover:hover {
   transform: translateY(-2px);
   box-shadow: var(--glass-shadow-hover);
+}
+
+/* ─── Hero Card Variant ──────────────────────────────────── */
+/* Accent top border to make the hero card visually distinct */
+.glass-card-hero {
+  border-top: 2px solid rgba(79, 70, 229, 0.45) !important;
+}
+.dark .glass-card-hero {
+  border-top: 2px solid rgba(129, 140, 248, 0.50) !important;
+  box-shadow:
+    0 0 0 1px rgba(129, 140, 248, 0.08),
+    0 4px 40px rgba(79, 70, 229, 0.20),
+    0 1px 0 rgba(255, 255, 255, 0.08) inset !important;
 }
 
 /* ─── Theme Transition ───────────────────────────────────── */

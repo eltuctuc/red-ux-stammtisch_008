@@ -9,7 +9,11 @@ export default function PortfolioHero() {
   const isPositive = change24hPct > 0
 
   return (
-    <GlassCard hover className="overflow-hidden">
+    <GlassCard
+      hover
+      className="overflow-hidden glass-card-hero"
+      style={{ background: 'var(--bg-surface-high)' }}
+    >
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 
         {/* Left: values */}

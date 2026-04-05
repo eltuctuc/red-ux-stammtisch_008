@@ -2,7 +2,7 @@ export default function AppLayout({ header, portfolioHero, priceChart, watchlist
   return (
     <div
       className="min-h-screen transition-colors duration-300"
-      style={{ backgroundColor: 'var(--bg-page)', color: 'var(--text-primary)' }}
+      style={{ color: 'var(--text-primary)' }}
     >
       {/* Header */}
       <div className="sticky top-0 z-40">
@@ -10,7 +10,7 @@ export default function AppLayout({ header, portfolioHero, priceChart, watchlist
       </div>
 
       {/* Main content */}
-      <main id="main-content" className="max-w-[1400px] mx-auto px-4 py-6 sm:px-6 lg:px-8">
+      <main id="main-content" className="max-w-[1400px] mx-auto px-4 py-8 sm:px-6 lg:px-8 sm:py-8">
 
         {/* Portfolio Hero – full width */}
         <div className="mb-6">

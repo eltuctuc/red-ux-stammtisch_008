@@ -5,10 +5,12 @@ export default function Header({ searchQuery, onSearchChange }) {
   return (
     <header
       role="banner"
-      className="backdrop-blur-md border-b"
+      className="border-b"
       style={{
-        backgroundColor: 'var(--bg-surface)',
+        backgroundColor: 'var(--bg-surface-high)',
         borderColor: 'var(--border)',
+        backdropFilter: 'blur(12px) saturate(120%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(120%)',
       }}
     >
       <a
