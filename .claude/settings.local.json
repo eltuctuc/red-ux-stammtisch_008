@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash([ -f .claude/settings.json ])",
+      "Bash(cp -n ~/.claude/templates/red-create-prototyp-project/commands/red:proto-workflow.md .claude/commands/)",
+      "Bash(cp -n ~/.claude/templates/red-create-prototyp-project/commands/red:proto-sparring.md .claude/commands/)",
+      "Bash(cp -n ~/.claude/templates/red-create-prototyp-project/commands/red:proto-dev-setup.md .claude/commands/)",
+      "Bash(cp -n ~/.claude/templates/red-create-prototyp-project/commands/red:proto-research.md .claude/commands/)",
+      "Bash(cp -n ~/.claude/templates/red-create-prototyp-project/commands/red:proto-requirements.md .claude/commands/)",
+      "Read(//Users/enricoreinsdorf/.claude/templates/**)",
+      "Read(//Users/enricoreinsdorf/.claude/templates/red-create-prototyp-project/**)",
+      "Bash(cp ~/.claude/templates/red-create-prototyp-project/commands/workflow.md .claude/commands/red:proto-workflow.md)",
+      "Bash(cp ~/.claude/templates/red-create-prototyp-project/commands/sparring.md .claude/commands/red:proto-sparring.md)",
+      "Bash(cp ~/.claude/templates/red-create-prototyp-project/commands/dev-setup.md .claude/commands/red:proto-dev-setup.md)",
+      "Bash(cp ~/.claude/templates/red-create-prototyp-project/commands/user-research.md .claude/commands/red:proto-research.md)",
+      "Bash(cp ~/.claude/templates/red-create-prototyp-project/commands/requirements.md .claude/commands/red:proto-requirements.md)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(npm create:*)",
+      "Bash(npm install:*)",
+      "Bash(git tag:*)"
+    ],
+    "additionalDirectories": [
+      "/Users/enricoreinsdorf/Projekte/red-ux-stammtisch_008/.claude"
+    ]
+  }
+}
